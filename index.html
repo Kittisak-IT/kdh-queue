@@ -4,134 +4,87 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ลำดับคิวห้องพิเศษ - รพ.กาญจนดิษฐ์</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: #f8fafc; /* สีเทาฟ้าอ่อนๆ ดูทันสมัย */
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding-top: 50px; /* เพิ่มระยะจากขอบบน */
-        }
-        .main-container {
+        /* จัดการหน้าจอให้เต็มและไม่มีขอบ */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
             width: 100%;
-            max-width: 450px;
-            padding: 0 15px;
+            overflow: hidden; 
+            background-color: #f8fafc;
         }
-        .card-header-custom {
+
+        /* ส่วนหัวจำลองเพื่อให้ดูสวยงามและบังแถบ Google */
+        .header-bar {
+            position: fixed;
+            top: 0;
+            width: 100%;
             background: #ffffff;
-            border-radius: 20px 20px 0 0;
-            padding: 25px;
+            padding: 15px 0;
             text-align: center;
-            border-bottom: 2px solid #f1f5f9;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 999;
         }
-        .queue-card-body {
-            background: #ffffff;
-            border-radius: 0 0 20px 20px;
-            padding: 10px 20px 30px 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+
+        /* กรอบสำหรับดึงหน้า Google Script มาแสดง */
+        iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: calc(100% + 55px); /* ขยายเพื่อดันแถบแจ้งเตือน Google ออกไป */
+            border: none;
+            margin-top: -55px; /* ดันแถบ This application was created... ขึ้นไปข้างบน */
         }
-        .patient-row {
+
+        .loader-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
             display: flex;
-            align-items: center;
-            padding: 18px 0;
-            border-bottom: 1px solid #f1f5f9;
-        }
-        .patient-row:last-child { border-bottom: none; }
-        
-        .q-number {
-            width: 45px;
-            height: 45px;
-            background: #0d9488;
-            color: white;
-            border-radius: 12px;
-            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
-            font-size: 1.2rem;
-            margin-right: 15px;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
         }
-        .patient-name {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #1e293b;
-            flex-grow: 1;
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #0d9488;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
-        .status-badge {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 8px;
-            background: #fef3c7;
-            color: #92400e;
-            font-weight: 600;
-        }
-        .empty-state {
-            padding: 50px 0;
-            text-align: center;
-            color: #94a3b8;
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
     </style>
 </head>
 <body>
 
-<div class="main-container">
-    <div class="card-header-custom">
-        <div style="font-size: 2.5rem; color: #0d9488;"><i class="bi bi-clipboard2-check-fill"></i></div>
-        <h4 class="fw-bold mt-2 mb-0">ลำดับคิวห้องพิเศษ</h4>
-        <p class="text-muted small mb-0">โรงพยาบาลกาญจนดิษฐ์</p>
+    <div id="loader" class="loader-container">
+        <div class="spinner"></div>
+        <p style="margin-top: 20px; color: #64748b; font-family: sans-serif;">กำลังโหลดข้อมูลคิว...</p>
     </div>
 
-    <div class="queue-card-body" id="content">
-        <div class="empty-state">
-            <div class="spinner-border text-teal mb-3" role="status"></div>
-            <p>กำลังโหลดข้อมูลคิว...</p>
-        </div>
-    </div>
+    <iframe 
+        src="https://script.google.com/macros/s/AKfycbyzRfRaWh9tE3tXOviiRbyY-_VqhkUlckS9abxMPR8B86hmhEJVM02vGPyUPEhptnEUJA/exec?mode=guest" 
+        onload="hideLoader()">
+    </iframe>
 
-    <p class="text-center mt-4 text-muted" style="font-size: 0.8rem;">
-        <i class="bi bi-clock-history"></i> ข้อมูลอัปเดตอัตโนมัติ
-    </p>
-</div>
-
-<script>
-    function loadQueueData() {
-        google.script.run.withSuccessHandler(data => {
-            const container = document.getElementById('content');
-            
-            // กรองเฉพาะสถานะ "รอยืนยัน" และ "รอห้องว่าง" เท่านั้น
-            const waitingList = data.filter(r => ['รอยืนยัน', 'รอห้องว่าง'].includes(r[7]));
-
-            if (waitingList.length === 0) {
-                container.innerHTML = `
-                    <div class="empty-state">
-                        <i class="bi bi-check-circle-fill text-success fs-1"></i>
-                        <p class="mt-2">ไม่มีคิวรอในขณะนี้</p>
-                    </div>`;
-                return;
-            }
-
-            let html = '';
-            waitingList.forEach((r, index) => {
-                html += `
-                    <div class="patient-row">
-                        <div class="q-number">${index + 1}</div>
-                        <div class="patient-name">${r[2]}</div>
-                        <div class="status-badge">${r[7]}</div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
-        }).getBookingData();
-    }
-
-    // โหลดข้อมูลเมื่อเปิดหน้า
-    window.onload = loadQueueData;
-</script>
-
+    <script>
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            loader.style.opacity = '0';
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
+        }
+    </script>
 </body>
 </html>
