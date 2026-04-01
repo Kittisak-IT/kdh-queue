@@ -12,6 +12,7 @@
             font-family: 'Sarabun', sans-serif;
             background: linear-gradient(135deg, #e0f2f1 0%, #ffffff 100%);
             height: 100vh;
+            margin: 0;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -39,26 +40,38 @@
             margin: 0 auto 20px;
         }
         .btn-check {
-            background: #0d9488;
-            color: white;
+            background-color: #0d9488 !important;
+            color: #ffffff !important;
             border-radius: 15px;
-            padding: 15px 25px;
+            padding: 18px 25px;
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             width: 100%;
             border: none;
             transition: all 0.3s;
-            text-decoration: none;
-            display: inline-block;
+            text-decoration: none !important;
+            display: block; /* มั่นใจว่าปุ่มจะแสดงผลเป็นบล็อก */
+            box-sizing: border-box;
         }
         .btn-check:hover {
-            background: #097a70;
+            background-color: #097a70 !important;
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(13, 148, 136, 0.3);
-            color: white;
+            color: #ffffff !important;
         }
         .hospital-name { color: #0d9488; font-weight: 600; }
         .footer-text { font-size: 0.8rem; color: #94a3b8; margin-top: 25px; }
+        
+        /* แก้ไข Alert ให้ดูสะอาดตาขึ้น */
+        .alert-custom {
+            background-color: #f0fdfa;
+            border: 1px solid #ccfbf1;
+            color: #0f766e;
+            border-radius: 12px;
+            padding: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
+        }
     </style>
 </head>
 <body>
@@ -70,17 +83,13 @@
     <h3 class="fw-bold mb-1">ระบบเช็คคิวห้องพิเศษ</h3>
     <p class="text-muted mb-4">บริการตรวจสอบลำดับการจองคิวออนไลน์</p>
     
-    <div class="alert alert-info py-2 mb-4" style="border-radius: 12px; font-size: 0.9rem;">
+    <div class="alert-custom">
         <i class="bi bi-info-circle-fill me-2"></i> ข้อมูลอัปเดตแบบ Real-time
     </div>
 
-    <div class="d-grid gap-2">
-    <a href="https://script.google.com/macros/s/AKfycbyzRfRaWh9tE3tXOviiRbyY-_VqhkUlckS9abxMPR8B86hmhEJVM02vGPyUPEhptnEUJA/exec?mode=guest" 
-       class="btn-check text-center" 
-       style="background: #0d9488 !important; color: white !important; display: block !important; visibility: visible !important;">
+    <a href="https://script.google.com/macros/s/AKfycbyzRfRaWh9tE3tXOviiRbyY-_VqhkUlckS9abxMPR8B86hmhEJVM02vGPyUPEhptnEUJA/exec?mode=guest" class="btn-check">
         <i class="bi bi-search me-2"></i> ตรวจสอบคิวปัจจุบัน
     </a>
-</div>
 
     <div class="mt-4">
         <p class="mb-0 small">โรงพยาบาล<span class="hospital-name">กาญจนดิษฐ์</span></p>
