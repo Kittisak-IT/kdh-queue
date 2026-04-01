@@ -3,136 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สถานะคิวห้องพิเศษ - รพ.กาญจนดิษฐ์</title>
+    <title>ลำดับคิวห้องพิเศษ - รพ.กาญจนดิษฐ์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            background-color: #f0fdfa;
+            background-color: #e0f2f1; /* สีเขียวมิ้นต์อ่อน */
             font-family: 'Sarabun', sans-serif;
-            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
-        .container {
+        /* Card หลัก */
+        .main-container {
             width: 95%;
-            max-width: 450px;
-            height: 85vh;
-            background: white;
-            border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            position: relative;
-            overflow: hidden;
+            max-width: 480px;
+            height: 90vh;
+            background: #ffffff;
+            border-radius: 25px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #b2dfdb;
         }
 
-        .header {
-            padding: 25px 20px 10px;
+        /* ส่วนหัว: ปรับให้เล็กลงเพื่อให้พื้นที่ตารางมากขึ้น */
+        .app-header {
+            padding: 20px 15px;
             text-align: center;
-            background: white;
-            z-index: 10;
-            border-bottom: 1px solid #f1f5f9;
+            background: #ffffff;
+            border-bottom: 2px solid #f1f5f9;
         }
 
-        .header h2 { margin: 0; color: #1e293b; font-size: 1.4rem; font-weight: 600; }
-        .header p { margin: 5px 0 0; color: #64748b; font-size: 0.85rem; }
+        .app-header h2 { 
+            margin: 0; 
+            color: #00695c; 
+            font-size: 1.3rem; 
+            font-weight: 600;
+        }
 
-        /* ปรับปรุงส่วนนี้เพื่อไม่ให้ทับหัวตาราง */
-        .iframe-wrapper {
+        .app-header p { 
+            margin: 4px 0 0; 
+            color: #64748b; 
+            font-size: 0.85rem; 
+        }
+
+        /* ส่วนแสดงผลข้อมูล: ปรับตำแหน่ง Iframe ให้พอดีหัวตาราง */
+        .content-area {
             flex-grow: 1;
             position: relative;
-            width: 100%;
             background: #fff;
             overflow: hidden;
         }
 
         iframe {
             position: absolute;
-            /* ปรับค่า top ให้ลดลงเพื่อไม่ให้บังหัวตาราง (จาก -55px เป็น -45px) */
-            top: -45px; 
+            /* ปรับค่านี้เพื่อให้ "คิว ชื่อ สถานะ" เลื่อนลงมาเห็นชัดๆ */
+            top: -42px; 
             left: 0;
             width: 100%;
-            /* เพิ่มความสูงชดเชยส่วนที่ดันขึ้นไป */
-            height: calc(100% + 45px); 
+            height: calc(100% + 42px);
             border: none;
         }
 
-        .loader {
+        /* หน้าจอรอโหลด (Loading) */
+        .loader-overlay {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: white;
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            z-index: 20;
-            transition: opacity 0.5s ease;
+            z-index: 100;
+            transition: opacity 0.4s;
         }
 
-        .spinner {
-            width: 40px;
-            height: 40px;
+        .loading-spinner {
+            width: 45px;
+            height: 45px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #0d9488;
+            border-top: 4px solid #009688;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .footer {
-            padding: 12px;
+        /* ส่วนท้าย */
+        .app-footer {
+            padding: 10px;
             text-align: center;
-            font-size: 0.7rem;
+            background: #f8fafc;
             color: #94a3b8;
-            background: #fff;
+            font-size: 0.75rem;
             border-top: 1px solid #f1f5f9;
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div style="font-size: 2.2rem; color: #0d9488; margin-bottom: 8px;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
-                <path d="M7 5.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm2 3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2 0a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
-            </svg>
-        </div>
-        <h2>ลำดับคิวห้องพิเศษ</h2>
-        <p>โรงพยาบาลกาญจนดิษฐ์ (v3.8)</p>
+<div class="main-container">
+    <div class="app-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#009688" viewBox="0 0 16 16" style="margin-bottom: 5px;">
+            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Zm.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0Zm-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/>
+            <path d="M2 13c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Z"/>
+        </svg>
+        <h2>รายชื่อคิวห้องพิเศษ</h2>
+        <p>โรงพยาบาลกาญจนดิษฐ์</p>
     </div>
 
-    <div class="iframe-wrapper">
-        <div id="loader" class="loader">
-            <div class="spinner"></div>
-            <p style="margin-top: 15px; color: #94a3b8; font-size: 0.9rem;">กำลังโหลดข้อมูล...</p>
+    <div class="content-area">
+        <div id="loading" class="loader-overlay">
+            <div class="loading-spinner"></div>
+            <p style="margin-top: 12px; color: #64748b;">กำลังอัปเดตข้อมูล...</p>
         </div>
         
         <iframe 
             src="https://script.google.com/macros/s/AKfycbyzRfRaWh9tE3tXOviiRbyY-_VqhkUlckS9abxMPR8B86hmhEJVM02vGPyUPEhptnEUJA/exec?mode=guest" 
-            onload="hideLoader()">
+            onload="doneLoading()">
         </iframe>
     </div>
 
-    <div class="footer">
-        ระบบบริหารจัดการโดยแผนกไอที รพ.กาญจนดิษฐ์
+    <div class="app-footer">
+        IT @ Kanchanadit Hospital
     </div>
 </div>
 
 <script>
-    function hideLoader() {
-        const loader = document.getElementById('loader');
+    function doneLoading() {
+        const loader = document.getElementById('loading');
         loader.style.opacity = '0';
         setTimeout(() => {
             loader.style.display = 'none';
-        }, 500);
+        }, 400);
     }
 </script>
 
